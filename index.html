@@ -20,6 +20,11 @@
 		<input type="hidden" v-model="application_id"/>
 		<input type="hidden" v-model="statu"/>
 		<div v-show="flag">
+		<span>账号摘要 <br>
+		{{search}}创号于{{statu.created_at | formatDateWithStamp}} 他的最后一次战斗于{{statu.last_battle_time | formatDateWithStamp}} 他最近一次离线于{{statu.logout_at | formatDateWithStamp}}
+		</span>
+		</div>
+		<div v-show="flag">
 		<span>PVP总体数据 <br>
 		{{search}}的pvp总体最高经验为{{pvp.max_xp}} 单局主炮击毁最多的船数是{{pvpMainbattery.max_frags_battle}} 单局最大侦查伤害为{{pvp.max_damage_scouting}} 你一共点亮了{{pvp.ships_spotted}}艘船<br>
 		单局副炮击毁最多的船数是{{pvpSecondBattery.max_frags_battle}} 一共获得了{{pvp.xp}}点经验 你进行了{{pvp.battles}}次对局 你在{{pvp.survived_battles}}次对局中存活了下来  单局内最多点亮了{{pvp.max_ships_spotted}}艘船<br>
@@ -109,9 +114,20 @@
 					keepTwoDigi: function (value) {
 						value = Number(value);
 						return value.toFixed(2);
-					},isNull: function (value) {
-						if(typeof(value)==undefined)
-						return 0;
+					},formatDateWithStamp: function(value) {//10位unix时间戳转换
+					var date = new Date(parseInt(value) * 1000);
+					var y = date.getFullYear();
+					var m = date.getMonth() + 1;
+					m = m < 10 ? "0" + m : m;
+					var d = date.getDate();
+					d = d < 10 ? "0" + d : d;
+					var h = date.getHours();
+					h = h < 10 ? "0" + h : h;
+					var minute = date.getMinutes();
+					var second = date.getSeconds();
+					minute = minute < 10 ? "0" + minute : minute;
+					second = second < 10 ? "0" + second : second;
+					return y + "年" + m + "月" + d + "日 " + h + ":" + minute + ":"+second;
 					}},
 				 methods:{
 					getPersionId:function(){
@@ -138,6 +154,7 @@
 						alert('查询的对象可能隐藏了个人数据');
 						}
 						else{
+					    that.statu = response.data.data[that.accountid];
 						that.flag = true;
 						that.getPvPStatus(response.data.data[that.accountid].statistics.pvp);
 						that.getPvPSoloStatus(response.data.data[that.accountid].statistics.pvp_solo);
