@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	</head>
+	<body>
+		<div id="box">
+		<input type="button" class="get" value="get" @click="getPersionId"/>
+		服务器名:<select v-model="ServiceName">
+			<option value="ru">ru</option>
+			<option value="eu">eu</option>
+			<option value="na">na</option>
+			<option value="asia">asia</option>
+		</select>
+		名字:<input type="text" v-model="search"/>
+		<input type="hidden" v-model="accountid"/>
+		<input type="hidden" v-model="statu"/>
+		<div v-show="flag"><span>pvp's status <br>{{pvp}}</span></div>
+		<div v-show="flag"><span>pvpsolo's status <br>{{pvpsolo}}</span></div>
+		<div v-show="flag"><span>pvpdiv2's status <br>{{pvpdiv2}}</span></div>
+		<div v-show="flag"><span>pvpdiv3's status <br>{{pvpdiv3}}</span></div>
+		<div v-show="flag"><span>ranksolo's status <br>{{ranksolo}}</span></div>
+		</div>
+	</body>
+	<script type="text/javascript">
+			 var app= new Vue({
+				 el:"#box",
+				 data:{
+					 ServiceName : 'asia',
+					 search:'',
+					 accountid:'',
+					 statu:'',
+					 pvp:'',
+					 pvpsolo:'',
+					 pvpdiv2:'',
+					 pvpdiv3:'',
+					 ranksolo:'',
+					 flag:false
+				 },
+				 methods:{
+					getPersionId:function(){
+						             var that=this;
+					 				 axios.get("https://api.worldofwarships."+that.ServiceName+"/wows/account/list/?application_id=0a1eb20b4e02749939ae81a5697f6036&search="+that.search).
+									 then(function(response)
+					 				 { 
+										 if(response.data.status=='error')
+					 					 alert('null or incorrect id');
+											that.accountid = response.data.data[0].account_id;
+											that.getPersionStatus(response);
+					 					  },function(err){
+					 						  alert(err);
+					 					  })
+					},
+					getPersionStatus:function(response){
+						var that=this;
+						that.accountid = response.data.data[0].account_id;
+						axios.get("https://api.worldofwarships."+that.ServiceName+"/wows/account/info/?application_id=0a1eb20b4e02749939ae81a5697f6036&extra=statistics.pvp_div2,statistics.pvp_div3,statistics.pvp_solo,statistics.rank_solo&account_id="+that.accountid).
+						then(function(response)
+						{ 
+						if(response.data.status=='error'){
+						alert('some error occured');
+						}
+						else{
+						that.flag = true;
+						that.getPvPStatus(response.data.data[that.accountid].statistics.pvp);
+						that.getPvPSoloStatus(response.data.data[that.accountid].statistics.pvp_
+						solo);
+						that.getPvPDiv2Status(response.data.data[that.accountid].statistics.pvp_div2);
+						that.getPvPDiv3Status(response.data.data[that.accountid].statistics.pvp_div3);
+						that.getRankSoloStatus(response.data.data[that.accountid].statistics.rank_solo);
+						}
+						},function(err){
+						alert(err);
+						})
+					 }
+					,
+					
+					getPvPStatus:function(pvp){
+						this.pvp = pvp;
+						alert("in getPvPStatus method");
+					},
+					getPvPSoloStatus:function(pvpsolo){
+						this.pvpsolo = pvpsolo;
+						alert("in getPvPSoloStatus method");
+					},
+					getPvPDiv2Status:function(pvpdiv2){
+						this.pvpdiv2 = pvpdiv2;
+						alert("in getPvPDiv2Status method");
+					},
+					getPvPDiv3Status:function(pvpdiv3){
+						this.pvpdiv3 = pvpdiv3;
+						alert("in getPvPDiv3Status method");
+					},
+					getRankSoloStatus:function(rank_solo){
+						this.ranksolo = rank_solo;
+						alert("in getRankSoloStatus method");
+					}
+				 }
+			 })
+	</script>
+</html>
