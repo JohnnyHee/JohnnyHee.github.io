@@ -75,42 +75,41 @@
 					<button v-on:click="show(5)">显示rank数据</button>
 				</div>
 				<div class="stats" v-if="flag">
-					<span>PVP总体数据 <br>
+					<span>{{search}}PVP总体数据 <br>
 						{{search}}的pvp总体最高经验是{{pvp.max_xp}} 单局最大侦查伤害是{{pvp.max_damage_scouting}} 一共点亮了{{pvp.ships_spotted}}艘船<br>
 						进行了{{pvp.battles}}次对局 存活{{pvp.survived_battles}}次 单局内最多点亮{{pvp.max_ships_spotted}} 单局最多击毁{{pvp.max_frags_battle}} <br>
-						单局最高伤害是{{pvp.max_damage_dealt}} pvp总体赢了{{pvp.wins}}局 pvp总体输了{{pvp.losses}}局 pvp总体胜率是<span id="winrate">{{pvp.wins/pvp.battles*100.0 | keepTwoDigi}}%</span> pvp生涯中最多单局击落了{{pvp.max_planes_killed}}了架飞机
+						单局最高伤害{{pvp.max_damage_dealt}} pvp赢了{{pvp.wins}}局 pvp输了{{pvp.losses}}局 pvp胜率<span id="winrate">{{pvp.wins/pvp.battles*100.0 | keepTwoDigi}}%</span> pvp生涯中最多单局击落了{{pvp.max_planes_killed}}了架飞机
 					</span>
 				</div>
 				<div class="stats" v-if="flag1">
-					<span>单野数据<br>
+					<span>{{search}}单野数据<br>
 						{{search}}的 单野最高经验是{{pvpsolo.max_xp}} 单局最大侦查伤害是{{pvpsolo.max_damage_scouting}} 一共点亮了{{pvpsolo.ships_spotted}}艘船<br>
 						进行了{{pvpsolo.battles}}次对局 存活{{pvpsolo.survived_battles}}次  单局内最多点亮{{pvpsolo.max_ships_spotted}} 单局最多击毁{{pvpsolo.max_frags_battle}}<br>
-						单局最高伤害是{{pvpsolo.max_damage_dealt}} 单野赢了{{pvpsolo.wins}}局 单野输了{{pvpsolo.losses}}局 单野胜率是<span id="winrate">{{pvpsolo.wins/pvpsolo.battles*100.0 | keepTwoDigi}}%</span> 单野最多单局击落了{{pvpsolo.max_planes_killed}}了架飞机
+						单局最高伤害{{pvpsolo.max_damage_dealt}} 单野赢了{{pvpsolo.wins}}局 单野输了{{pvpsolo.losses}}局 单野胜率<span id="winrate">{{pvpsolo.wins/pvpsolo.battles*100.0 | keepTwoDigi}}%</span> 单野最多单局击落了{{pvpsolo.max_planes_killed}}了架飞机
 					</span>
 				</div>
 				<div class="stats" v-if="flag2">
-					<span>自行车数据<br>
+					<span>{{search}}自行车数据<br>
 						{{search}}的自行车最高经验是{{pvpdiv2.max_xp}} 单局最大侦查伤害是{{pvpdiv2.max_damage_scouting}} 一共点亮了{{pvpdiv2.ships_spotted}}艘船<br>
 						你进行了{{pvpdiv2.battles}}次对局 存活{{pvpdiv2.survived_battles}}次  单局内最多点亮{{pvpdiv2.max_ships_spotted}} 单局最多击毁{{pvpdiv2.max_frags_battle}}<br>
-						单局最高伤害是{{pvpdiv2.max_damage_dealt}} 自行车赢了{{pvpdiv2.wins}}局 自行车输了{{pvpdiv2.losses}}局 自行车胜率是<span id="winrate">{{pvpdiv2.wins/pvpdiv2.battles*100.0 | keepTwoDigi}}%</span>
+						单局最高伤害{{pvpdiv2.max_damage_dealt}} 自行车赢了{{pvpdiv2.wins}}局 自行车输了{{pvpdiv2.losses}}局 自行车胜率<span id="winrate">{{pvpdiv2.wins/pvpdiv2.battles*100.0 | keepTwoDigi}}%</span>
 						两轮车最多单局击落了{{pvpdiv2.max_planes_killed}}了架飞机
 					</span>
 
 				</div>
 				<div class="stats" v-if="flag3">
-					<span>
-						三轮车数据<br>
+					<span>{{search}}三轮车数据<br>
 						{{search}}的三轮车最高经验是{{pvpdiv3.max_xp}} 单局最大侦查伤害是{{pvpdiv3.max_damage_scouting}} 一共点亮了{{pvpdiv3.ships_spotted}}艘船<br>
 						进行了{{pvpdiv3.battles}}次对局 存活{{pvpdiv3.survived_battles}}次 单局内最多点亮{{pvpdiv3.max_ships_spotted}} 单局最多击毁{{pvpdiv3.max_frags_battle}}<br>
-						单局最高伤害是{{pvpdiv3.max_damage_dealt}} 三轮车赢了{{pvpdiv3.wins}}局 三轮车输了{{pvpdiv3.losses}}局 三轮车胜率是<span id="winrate">{{pvpdiv3.wins/pvpdiv3.battles*100.0 | keepTwoDigi}}%</span>
+						单局最高伤害{{pvpdiv3.max_damage_dealt}} 三轮车赢了{{pvpdiv3.wins}}局 三轮车输了{{pvpdiv3.losses}}局 三轮车胜率<span id="winrate">{{pvpdiv3.wins/pvpdiv3.battles*100.0 | keepTwoDigi}}%</span>
 						三轮车最多单局击落了{{pvpdiv3.max_planes_killed}}了架飞机
 					</span>
 				</div>
 				<div class="stats" v-if="flag4">
-					<span>单排数据<br>
+					<span>{{search}}单排数据<br>
 						{{search}}的单排最高经验是{{ranksolo.max_xp}} 单局最大侦查伤害是{{ranksolo.max_damage_scouting}} 一共点亮了{{ranksolo.ships_spotted}}艘船<br>
 						进行了{{ranksolo.battles}}次对局 存活{{ranksolo.survived_battles}}次 单局内最多点亮{{ranksolo.max_ships_spotted}} 单局最多击毁{{ranksolo.max_frags_battle}}<br>
-						单局最高伤害是{{ranksolo.max_damage_dealt}} 单排赢了{{ranksolo.wins}}局 单排输了{{ranksolo.losses}}局 单排胜率是<span id="winrate">{{ranksolo.wins/ranksolo.battles*100.0 | keepTwoDigi}}%</span> 单排最多单局击落了{{ranksolo.max_planes_killed}}了架飞机
+						单局最高伤害{{ranksolo.max_damage_dealt}} 单排赢了{{ranksolo.wins}}局 单排输了{{ranksolo.losses}}局 单排胜率<span id="winrate">{{ranksolo.wins/ranksolo.battles*100.0 | keepTwoDigi}}%</span> 单排最多单局击落了{{ranksolo.max_planes_killed}}了架飞机
 					</span>
 				</div>
 				</div>
