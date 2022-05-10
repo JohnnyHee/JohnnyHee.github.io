@@ -6,135 +6,146 @@
 		<script src="js/vue/vue.min.js"></script>
 		<script src="js/axios/axios.min.js"></script>
 		<style type="text/css">
-			[v-cloak]{
-			    display: none;
+			[v-cloak] {
+				display: none;
 			}
-			#winrate{
+
+			#winrate {
 				color: red;
+			}
+
+			.stats {
+				width: 1000px;
+				height: 150px;
+				font-size: 14px solid black;
+				background-color: aliceblue;
+				margin: 0 auto;
+			}
+
+			.item {
+				text-align: center;
+			}
+
+			input {
+				border: 2px solid #B8B8B8 ;
+				height: 40px ;
+				width: 35% ;
+			 font-size: 16px ;
+			}
+
+			input:focus {
+				border: 2px solid #3385FF;
+			}
+
+			.btn {
+				border: 2px solid #B8B8B8 ;
+				height: 40px ;
+				width: 10% ;
+				font-size: 16px ;
+				background-color: aliceblue;
 			}
 		</style>
 	</head>
 	<body>
 		<div id="box" v-cloak>
-		服务器名:<select v-model="ServiceName">
-			<option value="ru">ru</option>
-			<option value="eu">eu</option>
-			<option value="na">na</option>
-			<option value="asia">asia</option>
-		</select>
-		名字:<input type="text" v-model="search" @input="flag=false"/>
-		<input type="button" class="get" value="获取战绩" @click="getPersionId"/>
-		<input type="hidden" v-model="accountid"/>
-		<input type="hidden" v-model="application_id"/>
-		<input type="hidden" v-model="statu"/>
-		<div v-if="isReady">
-		<span>账号摘要 <br>
-		{{search}}创号于{{statu.created_at | formatDateWithStamp}} 最后一次战斗于{{statu.last_battle_time | formatDateWithStamp}} 最近一次离线于{{statu.logout_at | formatDateWithStamp}}
-		</span>
-		</div>
-		<div v-if="isReady">
-		<button v-on:click="show(1)">显示总体数据</button>
-		<button v-on:click="show(2)">显示单野数据</button>
-		<button v-on:click="show(3)">显示自行车数据</button>
-		<button v-on:click="show(4)">显示三轮车数据</button>
-		<button v-on:click="show(5)">显示rank数据</button>
-		</div>
-		<div v-if="flag">
-		<span>PVP总体数据 <br>
-		{{search}}的pvp总体最高经验为{{pvp.max_xp}} 单局主炮击毁最多的船数是{{pvpMainbattery.max_frags_battle}} 单局最大侦查伤害为{{pvp.max_damage_scouting}} 一共点亮了{{pvp.ships_spotted}}艘船<br>
-		进行了{{pvp.battles}}次对局 在{{pvp.survived_battles}}次对局中存活了下来  单局内最多点亮了{{pvp.max_ships_spotted}}艘船<br>
-		单局最多击毁的船数是{{pvp.max_frags_battle}} 单局最多撞毁的船数是{{pvpRamming.max_frags_battle}} 单局使用鱼雷最多击毁的船数是{{pvpTorpedoes.max_frags_battle}} 单局使用飞机最多击毁的船数是{{pvpAircraft.max_frags_battle}}<br>
-		单局最高伤害是{{pvp.max_damage_dealt}} pvp总体赢了{{pvp.wins}}局 pvp总体输了{{pvp.losses}}局 <span id="winrate">pvp总体胜率是{{pvp.wins/pvp.battles*100.0 | keepTwoDigi}}%</span> pvp生涯中最多单局击落了{{pvp.max_planes_killed}}了架飞机
-		</span>
-		</div>
-		<div v-if="flag1">
-			<span>单野数据<br>
-			{{search}}的单野最高经验为{{pvpsolo.max_xp}} 单局主炮击毁最多的船数是{{pvpsoloMainbattery.max_frags_battle}} 单局最大侦查伤害为{{pvpsolo.max_damage_scouting}} 一共点亮了{{pvpsolo.ships_spotted}}艘船<br>
-			进行了{{pvpsolo.battles}}次对局 在{{pvpsolo.survived_battles}}次对局中存活了下来  单局内最多点亮了{{pvpsolo.max_ships_spotted}}艘船<br>
-			单局最多击毁的船数是{{pvpsolo.max_frags_battle}} 单局最多撞毁的船数是{{pvpsoloRamming.max_frags_battle}} 单局使用鱼雷最多击毁的船数是{{pvpsoloTorpedoes.max_frags_battle}} 单局使用飞机最多击毁的船数是{{pvpsoloAircraft.max_frags_battle}}<br>
-			单局最高伤害是{{pvpsolo.max_damage_dealt}} 单野赢了{{pvpsolo.wins}}局 单野输了{{pvpsolo.losses}}局 <span id="winrate">单野胜率是{{pvpsolo.wins/pvpsolo.battles*100.0 | keepTwoDigi}}%</span> 单野最多单局击落了{{pvpsolo.max_planes_killed}}了架飞机
-			</span>
-		
-		</div>
-		<div v-if="flag2">
-			<span>自行车数据<br>
-			{{search}}的自行车最高经验为{{pvpdiv2.max_xp}} 单局主炮击毁最多的船数是{{pvpdiv2Mainbattery.max_frags_battle}} 单局最大侦查伤害为{{pvpdiv2.max_damage_scouting}} 一共点亮了{{pvpdiv2.ships_spotted}}艘船<br>
-			你进行了{{pvpdiv2.battles}}次对局 你在{{pvpdiv2.survived_battles}}次对局中存活了下来  单局内最多点亮了{{pvpdiv2.max_ships_spotted}}艘船<br>
-			单局最多击毁的船数是{{pvpdiv2.max_frags_battle}} 单局最多撞毁的船数是{{pvpdiv2Ramming.max_frags_battle}} 单局使用鱼雷最多击毁的船数是{{pvpdiv2Torpedoes.max_frags_battle}} 单局使用飞机最多击毁的船数是{{pvpdiv2Aircraft.max_frags_battle}}<br>
-			单局最高伤害是{{pvpdiv2.max_damage_dealt}} 自行车赢了{{pvpdiv2.wins}}局 自行车输了{{pvpdiv2.losses}}局 <span id="winrate">自行车胜率是{{pvpdiv2.wins/pvpdiv2.battles*100.0 | keepTwoDigi}}%</span> 两轮车最多单局击落了{{pvpdiv2.max_planes_killed}}了架飞机
-			</span>
-		
-		</div>
-		<div v-if="flag3">
-		<span>
-		三轮车数据<br>
-		{{search}}的三轮车最高经验为{{pvpdiv3.max_xp}} 单局主炮击毁最多的船数是{{pvpdiv3Mainbattery.max_frags_battle}} 单局最大侦查伤害为{{pvpdiv3.max_damage_scouting}} 一共点亮了{{pvpdiv3.ships_spotted}}艘船<br>
-		进行了{{pvpdiv3.battles}}次对局 在{{pvpdiv3.survived_battles}}次对局中存活了下来  单局内最多点亮了{{pvpdiv3.max_ships_spotted}}艘船<br>
-		单局最多击毁的船数是{{pvpdiv3.max_frags_battle}} 单局最多撞毁的船数是{{pvpdiv3Ramming.max_frags_battle}} 单局使用鱼雷最多击毁的船数是{{pvpdiv3Torpedoes.max_frags_battle}} 单局使用飞机最多击毁的船数是{{pvpdiv3Aircraft.max_frags_battle}}<br>
-		单局最高伤害是{{pvpdiv3.max_damage_dealt}} 三轮车赢了{{pvpdiv3.wins}}局 三轮车输了{{pvpdiv3.losses}}局 <span id="winrate">三轮车胜率是{{pvpdiv3.wins/pvpdiv3.battles*100.0 | keepTwoDigi}}%</span> 三轮车最多单局击落了{{pvpdiv3.max_planes_killed}}了架飞机
-		</span>
-		</div>
-		<div v-if="flag4">
-		<span>单排数据<br>
-		{{search}}的单排最高经验为{{ranksolo.max_xp}} 单局主炮击毁最多的船数是{{ranksoloMainbattery.max_frags_battle}} 单局最大侦查伤害为{{ranksolo.max_damage_scouting}} 一共点亮了{{ranksolo.ships_spotted}}艘船<br>
-		进行了{{ranksolo.battles}}次对局 在{{ranksolo.survived_battles}}次对局中存活了下来  单局内最多点亮了{{ranksolo.max_ships_spotted}}艘船<br>
-		单局最多击毁的船数是{{ranksolo.max_frags_battle}} 单局最多撞毁的船数是{{ranksoloRamming.max_frags_battle}} 单局使用鱼雷最多击毁的船数是{{ranksoloTorpedoes.max_frags_battle}} 单局使用飞机最多击毁的船数是{{ranksoloAircraft.max_frags_battle}}<br>
-		单局最高伤害是{{ranksolo.max_damage_dealt}} 单排赢了{{ranksolo.wins}}局 单排输了{{ranksolo.losses}}局 <span id="winrate">单排胜率是{{ranksolo.wins/ranksolo.battles*100.0 | keepTwoDigi}}%</span> 单排最多单局击落了{{ranksolo.max_planes_killed}}了架飞机
-		</span>
-		</div>
+			<input type="hidden" v-model="accountid" />
+			<input type="hidden" v-model="application_id" />
+			<input type="hidden" v-model="statu" />
+			<div>
+				<div class="item">
+					服务器名:<select v-model="ServiceName">
+						<option value="ru">ru</option>
+						<option value="eu">eu</option>
+						<option value="na">na</option>
+						<option value="asia">asia</option>
+					</select>
+					名字:<input type="text" v-model="search"/>
+					<input type="button" class="btn" value="获取战绩" @click="getPersionId" />
+				
+				<div v-if="isReady">
+					<span>账号摘要 <br>
+						{{search}}创号于{{statu.created_at | formatDateWithStamp}}
+						最后一次战斗于{{statu.last_battle_time | formatDateWithStamp}}
+						最近一次离线于{{statu.logout_at | formatDateWithStamp}}
+					</span>
+				</div>
+				<div v-if="isReady">
+					<button v-on:click="show(1)">显示总体数据</button>
+					<button v-on:click="show(2)">显示单野数据</button>
+					<button v-on:click="show(3)">显示自行车数据</button>
+					<button v-on:click="show(4)">显示三轮车数据</button>
+					<button v-on:click="show(5)">显示rank数据</button>
+				</div>
+				<div class="stats" v-if="flag">
+					<span>PVP总体数据 <br>
+						{{search}}的pvp总体最高经验是{{pvp.max_xp}} 单局最大侦查伤害是{{pvp.max_damage_scouting}} 一共点亮了{{pvp.ships_spotted}}艘船<br>
+						进行了{{pvp.battles}}次对局 在{{pvp.survived_battles}}次对局中存活了下来 单局内最多点亮{{pvp.max_ships_spotted}} 单局最多击毁{{pvp.max_frags_battle}} <br>
+						单局最高伤害是{{pvp.max_damage_dealt}} pvp总体赢了{{pvp.wins}}局 pvp总体输了{{pvp.losses}}局 pvp总体胜率是<span id="winrate">{{pvp.wins/pvp.battles*100.0 | keepTwoDigi}}%</span> pvp生涯中最多单局击落了{{pvp.max_planes_killed}}了架飞机
+					</span>
+				</div>
+				<div class="stats" v-if="flag1">
+					<span>单野数据<br>
+						{{search}}的 单野最高经验是{{pvpsolo.max_xp}} 单局最大侦查伤害是{{pvpsolo.max_damage_scouting}} 一共点亮了{{pvpsolo.ships_spotted}}艘船<br>
+						进行了{{pvpsolo.battles}}次对局 在{{pvpsolo.survived_battles}}次对局中存活了下来 单局内最多点亮{{pvpsolo.max_ships_spotted}} 单局最多击毁{{pvpsolo.max_frags_battle}}<br>
+						单局最高伤害是{{pvpsolo.max_damage_dealt}} 单野赢了{{pvpsolo.wins}}局 单野输了{{pvpsolo.losses}}局 单野胜率是<span id="winrate">{{pvpsolo.wins/pvpsolo.battles*100.0 | keepTwoDigi}}%</span> 单野最多单局击落了{{pvpsolo.max_planes_killed}}了架飞机
+					</span>
+				</div>
+				<div class="stats" v-if="flag2">
+					<span>自行车数据<br>
+						{{search}}的自行车最高经验是{{pvpdiv2.max_xp}} 单局最大侦查伤害是{{pvpdiv2.max_damage_scouting}} 一共点亮了{{pvpdiv2.ships_spotted}}艘船<br>
+						你进行了{{pvpdiv2.battles}}次对局 你在{{pvpdiv2.survived_battles}}次对局中存活了下来 单局内最多点亮{{pvpdiv2.max_ships_spotted}} 单局最多击毁{{pvpdiv2.max_frags_battle}}<br>
+						单局最高伤害是{{pvpdiv2.max_damage_dealt}} 自行车赢了{{pvpdiv2.wins}}局 自行车输了{{pvpdiv2.losses}}局 自行车胜率是<span id="winrate">{{pvpdiv2.wins/pvpdiv2.battles*100.0 | keepTwoDigi}}%</span>
+						两轮车最多单局击落了{{pvpdiv2.max_planes_killed}}了架飞机
+					</span>
+
+				</div>
+				<div class="stats" v-if="flag3">
+					<span>
+						三轮车数据<br>
+						{{search}}的三轮车最高经验是{{pvpdiv3.max_xp}} 单局最大侦查伤害是{{pvpdiv3.max_damage_scouting}} 一共点亮了{{pvpdiv3.ships_spotted}}艘船<br>
+						进行了{{pvpdiv3.battles}}次对局 在{{pvpdiv3.survived_battles}}次对局中存活了下来 单局内最多点亮{{pvpdiv3.max_ships_spotted}} 单局最多击毁{{pvpdiv3.max_frags_battle}}<br>
+						单局最高伤害是{{pvpdiv3.max_damage_dealt}} 三轮车赢了{{pvpdiv3.wins}}局 三轮车输了{{pvpdiv3.losses}}局 三轮车胜率是<span id="winrate">{{pvpdiv3.wins/pvpdiv3.battles*100.0 | keepTwoDigi}}%</span>
+						三轮车最多单局击落了{{pvpdiv3.max_planes_killed}}了架飞机
+					</span>
+				</div>
+				<div class="stats" v-if="flag4">
+					<span>单排数据<br>
+						{{search}}的单排最高经验是{{ranksolo.max_xp}} 单局最大侦查伤害是{{ranksolo.max_damage_scouting}} 一共点亮了{{ranksolo.ships_spotted}}艘船<br>
+						进行了{{ranksolo.battles}}次对局 在{{ranksolo.survived_battles}}次对局中存活了下来 单局内最多点亮{{ranksolo.max_ships_spotted}} 单局最多击毁{{ranksolo.max_frags_battle}}<br>
+						单局最高伤害是{{ranksolo.max_damage_dealt}} 单排赢了{{ranksolo.wins}}局 单排输了{{ranksolo.losses}}局 单排胜率是<span id="winrate">{{ranksolo.wins/ranksolo.battles*100.0 | keepTwoDigi}}%</span> 单排最多单局击落了{{ranksolo.max_planes_killed}}了架飞机
+					</span>
+				</div>
+				</div>
+			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
-			 var app= new Vue({
-				 el:"#box",
-				 data:{
-					 ServiceName : 'asia',
-					 search:'',
-					 accountid:'',
-					 statu:'',
-					 pvp:'',
-					 pvpsolo:'',
-					 pvpdiv2:'',
-					 pvpdiv3:'',
-					 ranksolo:'',
-					 application_id:'0a1eb20b4e02749939ae81a5697f6036',
-					 pvpMainbattery:'',
-					 pvpSecondBattery:'',
-					 pvpRamming:'',
-					 pvpTorpedoes:'',
-					 pvpAircraft:'',
-					 pvpsoloMainbattery:'',
-					 pvpsoloSecondBattery:'',
-					 pvpsoloRamming:'',
-					 pvpsoloTorpedoes:'',
-					 pvpsoloAircraft:'',
-					 pvpdiv2Mainbattery:'',
-					 pvpdiv2SecondBattery:'',
-					 pvpdiv2Ramming:'',
-					 pvpdiv2Torpedoes:'',
-					 pvpdiv2Aircraft:'',
-					 pvpdiv3Mainbattery:'',
-					 pvpdiv3SecondBattery:'',
-					 pvpdiv3Ramming:'',
-					 pvpdiv3Torpedoes:'',
-					 pvpdiv3Aircraft:'',
-					 ranksoloMainbattery:'',
-					 ranksoloSecondBattery:'',
-					 ranksoloRamming:'',
-					 ranksoloTorpedoes:'',
-					 ranksoloAircraft:'',
-					 isReady:false,
-					 flag:false,
-					 flag1:false,
-					 flag2:false,
-					 flag3:false,
-					 flag4:false
-				 },
-				 filters: {
-					keepTwoDigi: function (value) {
+		var app = new Vue({
+			el: "#box",
+			data: {
+				ServiceName: 'asia',
+				search: '',
+				accountid: '',
+				statu: '',
+				pvp: '',
+				pvpsolo: '',
+				pvpdiv2: '',
+				pvpdiv3: '',
+				ranksolo: '',
+				application_id: '0a1eb20b4e02749939ae81a5697f6036',
+				isReady: false,
+				flag: false,
+				flag1: false,
+				flag2: false,
+				flag3: false,
+				flag4: false
+			},
+			filters: {
+					keepTwoDigi: function(value) {
 						value = Number(value);
-						return value.toFixed(2);
-					},formatDateWithStamp: function(value) {//10位unix时间戳转换
+					return value.toFixed(2);
+					}
+				,formatDateWithStamp: function(value) { //10位unix时间戳转换
 					var date = new Date(parseInt(value) * 1000);
 					var y = date.getFullYear();
 					var m = date.getMonth() + 1;
@@ -144,102 +155,74 @@
 					var h = date.getHours();
 					h = h < 10 ? "0" + h : h;
 					return y + "年" + m + "月" + d + "日 ";
-					}},
-				 methods:{
-					getPersionId:function(){
-						             var that=this;
-									 that.flag = false;
-					 				 axios.get("https://api.worldofwarships."+that.ServiceName+"/wows/account/list/?application_id="+that.application_id+"&search="+that.search).
-									 then(function(response)
-					 				 { 
-										 if(response.data.status=='error')
-					 					 alert('没输名字或者输入了错误的名字或者选择了错误的服务器');
-											that.accountid = response.data.data[0].account_id;
-											that.getPersionStatus(response);
-					 					  },function(err){
-					 						  alert(err);
-					 					  })
-					},
-					getPersionStatus:function(response){
-						var that=this;
+				}
+			},
+			methods: {
+				getPersionId: function() {
+					var that = this;
+					that.flag = false;
+					axios.get("https://api.worldofwarships." + that.ServiceName +
+						"/wows/account/list/?application_id=" + that.application_id + "&search=" + that.search
+						).
+					then(function(response) {
+						if (response.data.status == 'error')
+							alert('没输名字或者输入了错误的名字或者选择了错误的服务器');
 						that.accountid = response.data.data[0].account_id;
-						axios.get("https://api.worldofwarships."+that.ServiceName+"/wows/account/info/?application_id="+that.application_id+"&extra=statistics.pvp_div2,statistics.pvp_div3,statistics.pvp_solo,statistics.rank_solo&account_id="+that.accountid).
-						then(function(response)
-						{ 
-						if(response.data.status=='error'){
-						alert('查询的对象可能隐藏了个人数据');
-						}
-						else{
-					    that.statu = response.data.data[that.accountid];
-						that.isReady = true;
-						that.flag = true;
-						that.getPvPStatus(response.data.data[that.accountid].statistics.pvp);
-						that.getPvPSoloStatus(response.data.data[that.accountid].statistics.pvp_solo);
-						that.getPvPDiv2Status(response.data.data[that.accountid].statistics.pvp_div2);
-						that.getPvPDiv3Status(response.data.data[that.accountid].statistics.pvp_div3);
-						that.getRankSoloStatus(response.data.data[that.accountid].statistics.rank_solo);
-						}
-						},function(err){
+						that.getPersionStatus(response);
+					}, function(err) {
 						alert(err);
-						})
-					 }
-					,
-					
-					getPvPStatus:function(pvp){
-						this.pvp = pvp;
-						this.pvpMainbattery = pvp.main_battery;
-						this.pvpSecondBattery = pvp.second_battery;
-						this.pvpRamming = pvp.ramming;
-						this.pvpTorpedoes = pvp.torpedoes;
-						this.pvpAircraft = pvp.aircraft;
-					},
-					getPvPSoloStatus:function(pvpsolo){
-						this.pvpsolo = pvpsolo;
-						this.pvpsoloMainbattery = pvpsolo.main_battery;
-						this.pvpsoloSecondBattery = pvpsolo.second_battery;
-						this.pvpsoloRamming = pvpsolo.ramming;
-						this.pvpsoloTorpedoes = pvpsolo.torpedoes;
-						this.pvpsoloAircraft = pvpsolo.aircraft;
-					},
-					getPvPDiv2Status:function(pvpdiv2){
-						this.pvpdiv2 = pvpdiv2;
-						this.pvpdiv2Mainbattery = pvpdiv2.main_battery;
-						this.pvpdiv2SecondBattery = pvpdiv2.second_battery;
-						this.pvpdiv2Ramming = pvpdiv2.ramming;
-						this.pvpdiv2Torpedoes = pvpdiv2.torpedoes;
-						this.pvpdiv2Aircraft = pvpdiv2.aircraft;
-					},
-					getPvPDiv3Status:function(pvpdiv3){
-						this.pvpdiv3 = pvpdiv3;
-						this.pvpdiv3Mainbattery = pvpdiv3.main_battery;
-						this.pvpdiv3SecondBattery = pvpdiv3.second_battery;
-						this.pvpdiv3Ramming = pvpdiv3.ramming;
-						this.pvpdiv3Torpedoes = pvpdiv3.torpedoes;
-						this.pvpdiv3Aircraft = pvpdiv3.aircraft;
-					},
-					getRankSoloStatus:function(rank_solo){
-						this.ranksolo = rank_solo;
-						this.ranksoloMainbattery = rank_solo.main_battery;
-						this.ranksoloSecondBattery = rank_solo.second_battery;
-						this.ranksoloRamming = rank_solo.ramming;
-						this.ranksoloTorpedoes = rank_solo.torpedoes;
-						this.ranksoloAircraft = rank_solo.aircraft;
-					},
-					show:function(num){
-						this.flag = false;
-						this.flag1 = false;
-						this.flag2 = false;
-						this.flag3 = false;
-						this.flag4 = false;
-						switch(num){
-							case 1:this.flag=true;break;
-							case 2:this.flag1=true;break;
-							case 3:this.flag2=true;break;
-							case 4:this.flag3=true;break;
-							case 5:this.flag4=true;break;
+					})
+				},
+				getPersionStatus: function(response) {
+					var that = this;
+					that.accountid = response.data.data[0].account_id;
+					axios.get("https://api.worldofwarships." + that.ServiceName +
+						"/wows/account/info/?application_id=" + that.application_id +
+						"&extra=statistics.pvp_div2,statistics.pvp_div3,statistics.pvp_solo,statistics.rank_solo&account_id=" +
+						that.accountid).
+					then(function(response) {
+						if (response.data.status == 'error') {
+							alert('查询的对象可能隐藏了个人数据');
+						} else {
+							that.statu = response.data.data[that.accountid];
+							that.isReady = true;
+							//that.flag = true;
+							that.pvp = response.data.data[that.accountid].statistics.pvp;
+							that.pvpsolo = response.data.data[that.accountid].statistics.pvp_solo;
+							that.pvpdiv2 = response.data.data[that.accountid].statistics.pvp_div2;
+							that.pvpdiv3 = response.data.data[that.accountid].statistics.pvp_div3;
+							that.ranksolo = response.data.data[that.accountid].statistics.rank_solo;
 						}
+					}, function(err) {
+						alert(err);
+					})
+				},
+
+				show: function(num) {
+					this.flag = false;
+					this.flag1 = false;
+					this.flag2 = false;
+					this.flag3 = false;
+					this.flag4 = false;
+					switch (num) {
+						case 1:
+							this.flag = true;
+							break;
+						case 2:
+							this.flag1 = true;
+							break;
+						case 3:
+							this.flag2 = true;
+							break;
+						case 4:
+							this.flag3 = true;
+							break;
+						case 5:
+							this.flag4 = true;
+							break;
 					}
-				 }
-			 })
+				}
+			}
+		})
 	</script>
 </html>
